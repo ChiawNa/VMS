@@ -31,7 +31,7 @@ async function seedData(){
             username: "Kang2001",
             password: hash,
             email: "chiawnak0390@gmail.com",
-            role: "admin",
+            role: "security",
             visitors:[]
         }
 
@@ -55,7 +55,7 @@ async function seedData(){
             username: "Siti",
             password: hash2,
             email: "siti123@gmail.com",
-            role: "admin",
+            role: "security",
             visitors: []
         }
 

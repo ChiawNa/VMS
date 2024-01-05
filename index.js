@@ -49,7 +49,7 @@ async function run() {
     });
     
 
-//user login configuration
+//all login configuration
 app.post('/login', async (req, res) => {
   try{
     const result =  await login(req.body.username, req.body.password)
@@ -67,223 +67,59 @@ app.post('/login', async (req, res) => {
 });
 
 
-//admin register user configuration
-app.post('/register/admin', authenticateAdmin, async (req, res) => {
-  let result = await registeradmin(
-  req.body.username,
-  req.body.password,
-  req.body.email
-  ); 
-  res.send(result);
+
+//test register admin configuration
+app.post('/register/admin', async (req, res) => {
+  try{
+    let result = await registeradmin(
+      req.body.username,
+      req.body.password,
+      req.body.email
+      ); 
+      res.send(result);
+    }catch (error) {
+      console.error(error);
+      res.status(500).send("Internal Server Error");
+   }
 });
 
-//admin register user configuration
-app.post('/register/security', authenticateSecurity, async (req, res) => {
-  let result = await registersecurity(
-  req.body.username,
-  req.body.password,
-  req.body.email
-  ); 
-  res.send(result);
-});
     
+/*//register admin configuration
+app.post('/register/admin', verifyToken, async (req, res) => {
+  try{
+    let result = await registersecurity(
+      req.body.username,
+      req.body.password,
+      req.body.email
+      ); 
+      res.send(result);
+    }catch (error) {
+      console.error(error);
+      res.status(500).send("Internal Server Error");
+   }
+});
+
 
 //user create visitor
     app.post('/create/visitor/admin', authenticateAdmin, async (req, res) => {
-      const from = req.User.username;
-      let result = createvisitor(
-      req.body.visitorname,
-      req.body.timespend,
-      req.body.age,
-      req.body.phonenumber,
-      from
-      ); 
-      res.send(result);
-  });
-
-//Admin accepting the visitor pass
-app.put('/retrieving/pass/:visitorname/:idproof', verifyAdminToken, async (req, res) => {
-  const visitorname = req.params.visitorname;
-  const idproof = req.params.idproof;
-
-  try {
-      const updateaccessResult = await client
-          .db('VMS')
-          .collection('Visitor')
-          .updateOne({ visitorname,idproof },
-              { $set: { entrytime,cabinno,computername,access } });
-
-      if (updateaccessResult.modifiedCount === 0) {
-          return res.status(404).send('visitor not found or unauthorized');
-      }
-
-      res.send('access updated successfully');
-  } catch (error) {
-      console.error(error);
-      res.status(500).send('Internal Server Error');
-  }
-});
-
-/*    //start sini
-
-    //see created user
-    app.get('/view/user/admin', verifyToken, async (req, res) => {
-      try {
-      const result = await client
-          .db('VMS')
-          .collection('User')
-          .find()
-          .toArray();
-    
-      res.send(result);
-      } catch (error) {
-      console.error(error);
-      res.status(500).send("Internal Server Error");
-      }
-  });
-
-    
-    //create visitor
-    app.post('/create/visitor', async (req, res) => {
-      try {
+      try{
+        const from = req.admin.username;
         let result = await createvisitor(
           req.body.visitorname,
-          req.body.idproof,
-          req.body.entrytime
-          ); 
-          res.send(result);
-      }
-      catch (error) {
-        console.error(error);
-        res.status(500).send("Internal Server Error");
-        }
-    });
-
-    //create visitor (test)
-    app.post('/create/test/visitor', async (req, res) => {
-      try {
-        let result = await createtestvisitor(
-          req.body.visitorname,
-          req.body.idproof,
-          req.body.entrytime,
-          req.body.approval
-          ); 
-          res.send(result);
-      }
-      catch (error) {
-        console.error(error);
-        res.status(500).send("Internal Server Error");
-        }
-    });
-    
-    //see created visitor
-    app.get('/view/visitor/admin', verifyToken, async (req, res) => {
-        try {
-        const result = await client
-            .db('Cybercafe')
-            .collection('Visitor')
-            .find()
-            .toArray();
-    
-        res.send(result);
-        } catch (error) {
-        console.error(error);
-        res.status(500).send("Internal Server Error");
-        }
-    });
-
-      //see created visitor (test)
-      app.get('/view/test/visitor/admin', verifyToken, async (req, res) => {
-        try {
-        const result = await client
-            .db('Cybercafe')
-            .collection('Test')
-            .find()
-            .toArray();
-    
-        res.send(result);
-        } catch (error) {
-        console.error(error);
-        res.status(500).send("Internal Server Error");
-        }
-    });
-    
-
-    //delete visitor
-    app.delete('/delete/visitor/:idproof', verifyToken, async (req, res) => {
-      const idproof = req.params.idproof;
-    
-      try {
-        const deletevisitorResult = await client
-          .db('Cybercafe')
-          .collection('Visitor')
-          .deleteOne({ idproof: idproof});
-    
-        if (deletevisitorResult.deletedCount === 0) {
-          return res.status(404).send('Visitor not found or unauthorized');
-        }
-    
-        res.send('Visitor deleted successfully');
-      } catch (error) {
-        console.error(error);
-        res.status(500).send('Internal Server Error');
-      }
-    });
-
-
-    
-    //create visitor log
-    app.post('/create/visitorlog/admin', verifyToken, async (req, res) => {
-        let result = createvisitorlog(
-        req.body.visitorname,
-        req.body.idproof,
-        req.body.timespend,
-        req.body.payment
+          req.body.timespend,
+          req.body.age,
+          req.body.phonenumber,
+          from
         ); 
-        res.send(result);
-    });
-    
-
-    //see created visitor log
-    app.get('/view/visitorlog/admin', verifyToken, async (req, res) => {
-        try {
-        const result = await client
-            .db('Cybercafe')
-            .collection('Visitor Log')
-            .find()
-            .toArray();
-    
-        res.send(result);
+          res.send(result);
         } catch (error) {
-        console.error(error);
-        res.status(500).send("Internal Server Error");
-        }
-    });
-
-    //create computer
-    app.post('/create/computer', async (req, res) => {
-      let result = createcomputer(
-        req.body.idproof,
-        req.body.lanportno,
-        req.body.available
-        ); 
-        res.send(result);
-      });
-      
-
-    //see created computer  
-    app.get('/view/computer/admin', verifyToken, async (req, res) => {
-      try {
-        const result = await client
-        .db('Cybercafe').collection('Computer').find().toArray();
-        
-        res.send(result);
-      } catch (error) {
-        console.error(error);
-        res.status(500).send("Internal Server Error");
+          console.error(error);
+          res.status(500).send("Internal Server Error");
       }
-    });*/
-    
+    });
+    */
+
+
         
   }catch (e) {
     console.error(e);
@@ -315,108 +151,49 @@ async function login(requsername, reqpassword) {
    return { message: "Invalid password" };
 }
 
-  async function registeradmin(requsername, reqpassword, reqemail) {
-    try{
-      const hash = await bcrypt.hash(reqpassword, 10);
-      await client.db(dbName).collection(collection1).insertOne({
-          "username": requsername,
-          "password": hash,
-          "email":reqemail,
-          role: "admin",
-          visitors: []
-        });
-        return "User is created.";
-    }catch(error){
-      console.error(error);
-      return "Error creating user. ";
-    }
-  }
 
 
+async function registeradmin(requsername, reqpassword, reqemail) {
+  try {
+    const hash = await bcrypt.hash(reqpassword, 10);
 
-  /*async function registersecurity(requsername, reqpassword, reqemail) {
-    try{
-      const hash = await bcrypt.hash(reqpassword, 10);
-      await client.db(dbName).collection(collection1).insertOne({
-          "username": requsername,
-          "password": hash,
-          "email":reqemail,
-          role: "security",
-          visitors: []
-        });
-        return "User is created.";
-    }catch(error){
-      console.error(error);
-      return "Error creating user. ";
-    }
-  }
+    // Assuming createvisitor is a function that returns a visitor object
+    //const visitor = await createvisitor("VisitorName", "0", 25, "123456789", requsername);
 
-
-
-
-  /*async function createvisitor(reqvisitorname, reqtimespend = "0", reqage, reqphonenumber = "0"){
-    try{
-      await client.db(dbName).collection(collection2).insertOne({
-        "name": reqvisitorname,
-        "timespend":reqtimespend,
-        "age":reqage,
-        "phonenumber":reqphonenumber,
-        "from":from
-      });
-      return "Visitor is added.";
-    }catch(error){
-      console.error(error);
-      return "Error creating user. ";
-    }
-  }
-
-
-//user create visitor function
-function createvisitor(reqvisitorname, reqtimespend = "0", reqage, reqphonenumber = "0") {
-    client.db('VMS').collection('Visitor').insertOne({
-        "visitorname": reqvisitorname,
-        "timespend":reqtimespend,
-        "age":reqage,
-        "phonenumber":reqphonenumber,
-        from: username
-      });
-      return "Visitor is added.";
-    }
-
-
-
-//create visitor function (test)
-function createtestvisitor(reqvisitorname, reqidproof, reqentrytime = "0", reqapproval) {
-  client.db('Cybercafe').collection('Test').insertOne({
-      "visitorname": reqvisitorname,
-      "idproof": reqidproof,
-      "entrytime":reqentrytime,
-      "approval":reqapproval
+    await client.db(dbName).collection(collection1).insertOne({
+      "username": requsername,
+      "password": hash,
+      "email": reqemail,
+      "role": "admin",
+//      "visitors": []
     });
-    return "Visitor is added";
+
+    return "Admin is created.";
+  } catch (error) {
+    console.error(error);
+    return "Error creating user.";
   }
+}
 
-//create visitorlog function
-function createvisitorlog(reqvisitorname, reqidproof, reqtimespend = 0, reqpayment = 0) {
-    client.db('Cybercafe').collection('Visitor Log').insertOne({
-        "visitorname": reqvisitorname,
-        "idproof": reqidproof,
-        "timespend": reqtimespend,
-        "payment": reqpayment,
-      });
-      return "Visitor log is recorded";
-    }
-
-//create computer function
-function createcomputer(reqidproof, reqLanportno, reqAvailable) {
-  client.db('Cybercafe').collection('Computer').insertOne({
-
-      "idproof": reqidproof,
-      "lanportno": reqLanportno,
-      "available": reqAvailable
+/*async function createvisitor(reqvisitorname, reqtimespend = "0", reqage, reqphonenumber = "0", adminUsername) {
+  try {
+    await client.db(dbName).collection(collection2).insertOne({
+      "name": reqvisitorname,
+      "timespend": reqtimespend,
+      "age": reqage,
+      "phonenumber": reqphonenumber,
+      "from": admin.username
     });
-    return "Computer is added";
-  }*/
+
+    await client.db(dbName).collection(collection1).updateOne({username: user.username}, {$push: {visitors: visitor }});
+    await client.db(dbName).collection(collection2).insertOne(visitor);
+
+    return "Visitor is added.";
+  } catch (error) {
+    console.error(error);
+    return "Error creating user.";
+  }
+}*/
 
   //token function
 const jwt = require('jsonwebtoken');
@@ -452,7 +229,7 @@ function verifyToken(req, res, next) {
 }
 
 
-//new add
+/*//new add
 function authenticateAdmin(req, res, next) {
   let header = req.headers.authorization;
   if (!header) {
@@ -500,4 +277,4 @@ function authenticateSecurity(req, res, next) {
       return next();
     }
   });
-}
+}*/
