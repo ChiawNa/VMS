@@ -151,7 +151,7 @@
  *             application/json:
  *               example:
  *                 visitors:
- *                   - visitorname: "ayam"
+ *                   - visitorname: "abu"
  *                     id: "999999999"
  *         '401':
  *           description: Unauthorized. Only admin can view
@@ -174,10 +174,13 @@
  * @swagger
  * /create/visitor/admin:
  *   post:
- *     summary: Create a Visitor
+ *     summary: Admin create a Visitor
  *     tags:
- *       - Visitor List
+ *       - Visitor
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
+ *       required: true
  *       content:
  *         application/json:
  *           schema:

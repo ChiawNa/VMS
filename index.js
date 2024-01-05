@@ -99,25 +99,39 @@ app.post('/register/admin', verifyToken, async (req, res) => {
    }
 });
 
-/*
+
+//admin view created user
+app.get('/view/user/admin', verifyToken, async (req, res) => {
+  try {
+    const result = await client
+    .db('VMS')
+    .collection('User')
+    .find()
+    .toArray();
+    
+    res.send(result);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+    }
+});
+
+
 //user create visitor
-    app.post('/create/visitor/admin', authenticateAdmin, async (req, res) => {
-      try{
-        const from = req.admin.username;
-        let result = await createvisitor(
-          req.body.visitorname,
-          req.body.timespend,
-          req.body.age,
-          req.body.phonenumber,
-          from
-        ); 
-          res.send(result);
-        } catch (error) {
-          console.error(error);
-          res.status(500).send("Internal Server Error");
-      }
-    });
-    */
+app.post('/create/visitor/admin', verifyToken, async (req, res) => {
+  try{
+    let result = await createvisitor(
+      req.body.visitorname,
+      req.body.timespend,
+      req.body.age,
+      req.body.phonenumber,
+      ); 
+      res.send(result);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Internal Server Error");
+    }
+  });
 
 
         
@@ -175,25 +189,20 @@ async function registeradmin(requsername, reqpassword, reqemail) {
   }
 }
 
-/*async function createvisitor(reqvisitorname, reqtimespend = "0", reqage, reqphonenumber = "0", adminUsername) {
+async function createvisitor(reqvisitorname, reqtimespend = "0", reqage, reqphonenumber = "0") {
   try {
     await client.db(dbName).collection(collection2).insertOne({
       "name": reqvisitorname,
       "timespend": reqtimespend,
       "age": reqage,
       "phonenumber": reqphonenumber,
-      "from": admin.username
     });
-
-    await client.db(dbName).collection(collection1).updateOne({username: user.username}, {$push: {visitors: visitor }});
-    await client.db(dbName).collection(collection2).insertOne(visitor);
-
     return "Visitor is added.";
   } catch (error) {
     console.error(error);
     return "Error creating user.";
   }
-}*/
+}
 
   //token function
 const jwt = require('jsonwebtoken');
