@@ -8,17 +8,25 @@ Content-Type: application/json
     "password":"1234_abcd"
 }
 
-//Admin
-
 ###
-post http://localhost:3000/register/user
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkthbmcyMDAxIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzA0NDIxNTI1LCJleHAiOjE3MDQ0MjIxMjV9.naTYsLfK0AewfUbCi3JGY8wqLeqvQ9jVFEEXXt_i_YE
+post http://localhost:3000/login
 Content-Type: application/json
 
 {
     "username":"Siti",
-    "password":"b022124",
-    "email":"siti123@gmail.com"
+    "password":"b022124"
+}
+
+
+###
+post http://localhost:3000/register/user
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNpdGkiLCJyb2xlIjoic2VjdXJpdHkiLCJpYXQiOjE3MDQ0NDEzNjUsImV4cCI6MTcwNDQ0MTk2NX0.c1MJDkP3DJXnRZA8FSNOlcH4MspXq2JGYgzhHJLWXzY
+Content-Type: application/json
+
+{
+    "username":"Filza",
+    "password":"d02220",
+    "email":"filza@gmail.com"
 } 
 
 
@@ -35,7 +43,7 @@ Content-Type: application/json
 }
 
 
-
+//sini
 
 ###
 post http://localhost:3000/create/test/visitor
@@ -103,3 +111,4 @@ Content-Type: application/json
 ###
 GET http://localhost:3000/view/computer/admin
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFtaXIiLCJpYXQiOjE3MDM0MTcwMTMsImV4cCI6MTcwMzQxNzYxM30.EpkbihyKjKazLHI9HHNaiqNQIMoZIUTikmMc4B0d800
+

@@ -10,11 +10,11 @@
 
 /**
  * @swagger
- * /login/admin:
+ * /login:
  *   post:
- *     summary: Login Admin
+ *     summary: User Login
  *     tags:
- *       - Admin Access
+ *       - User
  *     requestBody:
  *       content:
  *         application/json:
@@ -31,7 +31,7 @@
  *         content:
  *           application/json:
  *             example:
- *               message: Admin created successfully
+ *               message: User is created successfully
  *       400:
  *         description: Bad Request
  *         content:
@@ -42,9 +42,8 @@
  *     examples:
  *       'application/json':
  *         username: JohnDoe
- *         password: XYZ123
+ *         password: Xyz_123
  */
-
 
 
 /**
@@ -87,8 +86,8 @@
  *     examples:
  *       'application/json':
  *         username: JohnDoe
- *         password: 234aaa
- *         email: chiawna@gmail.com
+ *         password: 234@Aaa
+ *         email: john@gmail.com
  */
 
 

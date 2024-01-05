@@ -4,30 +4,6 @@ const bcrypt = require('bcrypt');
 const dbName = "VMS";
 const saltRounds = 10;
 
-/*const options = {
-    definition: {
-      openapi: '3.0.0',
-      info: {
-        title: 'Cybercafe Visitor Management System',
-        description: 'API for managing visitors in a cybercafe',
-        version: '1.0.0',
-      },        
-      components:{
-        //added
-        securitySchemes:{
-            Authorization:{
-                type: "http",
-                scheme: "bearer",
-                bearerFormat: "JWT",
-                value: "Bearer <JWT token here>",
-                description: "This is for authentication, you must logout to change the JWT token"
-            }
-        }
-    },
-    },
-    apis: ['./Cybercafe.js'], //files containing annotations as above
-  };*/
-
 
 //connect to mongodb
 const { MongoClient, ServerApiVersion } = require('mongodb');
@@ -77,7 +53,7 @@ async function seedData(){
             username: "Siti",
             password: hash2,
             email: "siti123@gmail.com",
-            role: "host",
+            role: "security",
             visitors: []
         }
         await db.collection(collection1).insertOne(user2);
@@ -91,6 +67,8 @@ async function seedData(){
         }
         await db.collection(collection2).insertOne(visitor2);
         await db.collection(collection1).updateOne({username: user2.username}, {$push: {visitors: visitor2}})
+       
+        
         //output this message if all data successfully added to database
         console.log('Data seeded successfully');
     }catch (error) {

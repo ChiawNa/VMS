@@ -36,8 +36,6 @@ const client = new MongoClient(uri, {
   }
 });
 
-//eee
-
 async function run() {
   try {
     // Connect the client to the server (optional starting in v4.7)
@@ -69,7 +67,7 @@ app.post('/login', async (req, res) => {
 });
 
 
-//register user configuration
+//admin register user configuration
 app.post('/register/user', authenticateAdmin, async (req, res) => {
   let result = await registeruser(
   req.body.username,
@@ -81,7 +79,7 @@ app.post('/register/user', authenticateAdmin, async (req, res) => {
 
 
     
-
+/*
 //user create visitor
     app.post('/create/visitor/user', verifyToken, async (req, res) => {
         let result = createvisitor(
@@ -253,7 +251,7 @@ app.post('/register/user', authenticateAdmin, async (req, res) => {
         console.error(error);
         res.status(500).send("Internal Server Error");
       }
-    });
+    });*/
     
         
   }catch (e) {
@@ -303,7 +301,7 @@ function registeruser(requsername, reqpassword, reqemail) {
           "username": requsername,
           "password": hash,
           "email":reqemail,
-          role: "host",
+          role: "admin",
           visitors: []
         });
         return "User is created.";
@@ -311,9 +309,10 @@ function registeruser(requsername, reqpassword, reqemail) {
       console.error(error);
       return "Error creating user. ";
     }
-  
-    }
-  
+  }
+
+
+ /* 
 //user create visitor function
 function createvisitor(reqvisitorname, reqtimespend = "0", reqage, reqphonenumber = "0") {
     client.db('VMS').collection('Visitor').insertOne({
@@ -358,7 +357,7 @@ function createcomputer(reqidproof, reqLanportno, reqAvailable) {
       "available": reqAvailable
     });
     return "Computer is added";
-  }
+  }*/
 
   //token function
 const jwt = require('jsonwebtoken');
