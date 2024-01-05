@@ -49,12 +49,15 @@
 
 /**
  * @swagger
- * /create/user:
+ * /register/user:
  *   post:
  *     summary: Create a User
  *     tags:
  *       - User Management
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
+ *       required: true
  *       content:
  *         application/json:
  *           schema:
@@ -62,8 +65,11 @@
  *             properties:
  *               username:
  *                 type: string
- *               idproof:
+ *               password:
  *                 type: string
+ *               email:
+ *                 type: string
+ * 
  *     responses:
  *       200:
  *         description: Success
@@ -81,7 +87,8 @@
  *     examples:
  *       'application/json':
  *         username: JohnDoe
- *         idproof: XYZ123
+ *         password: 234aaa
+ *         email: chiawna@gmail.com
  */
 
 

@@ -1,6 +1,10 @@
 const express = require('express');
 const app = express();
+const bcrypt = require('bcrypt');
 const port = process.env.PORT || 3000;
+const dbName = 'VMS';
+const collection1 = "User"
+const collection2 = "Visitor" 
 //const mongoURI = process.env.MONGODB_URI
 app.use(express.json());
 
@@ -19,6 +23,7 @@ const options = {
 };
 const swaggerSpec = swaggerJsdoc(options);
 app.use('/group23', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 
 //connect to mongodb
 const { MongoClient, ServerApiVersion } = require('mongodb');
@@ -47,31 +52,32 @@ async function run() {
     
 
 //user login configuration
-    app.post('/login', async (req, res) => {
-      try{
-        const result =  await login(req.body.username, req.body.password)
-        if (result.message === 'Correct password') {
-          const token = generateToken({ username: req.body.username });
-          res.send({ message: 'Successful login', token });
-        } else {
-          res.send('Login unsuccessful');
-        }
-      }catch(error){
-            console.error(error);
-            res.status(500).send("Internal Server Error");
-        };
-    });
+app.post('/login', async (req, res) => {
+  try{
+    const result =  await login(req.body.username, req.body.password)
+    if (result.message == 'Correct password') {
+      const user1 = await client.db(dbName).collection(collection1).findOne({username: req.body.username});
+      const token = await generateToken({ username: req.body.username , role: user1.role});
+      res.send({ message: 'Successful login', token });
+    } else {
+      res.send('Login unsuccessful');
+    }
+  }catch(error){
+        console.error(error);
+        res.status(500).send("Internal Server Error");
+    };
+});
 
 
 //register user configuration
-    app.post('/register/user', async (req, res) => {
-        let result = registeruser(
-        req.body.username,
-        req.body.password,
-        req.body.email
-        ); 
-        res.send(result);
-    });
+app.post('/register/user', authenticateAdmin, async (req, res) => {
+  let result = await registeruser(
+  req.body.username,
+  req.body.password,
+  req.body.email
+  ); 
+  res.send(result);
+});
 
 
     
@@ -268,18 +274,19 @@ run().catch(console.dir);
 //function 放下面
 
 async function login(requsername, reqpassword) {
-    let matchUser = await client.db('VMS').collection('User').findOne({ username: { $eq: requsername } });
-  
-    if (!matchUser)
-      return { message: "User not found!" };
-  
-    if (matchUser.password === reqpassword)
-      return { message: "Correct password", user: matchUser };
-    else
-     return { message: "Invalid password" };
-  }
+  let matchUser = await client.db('VMS').collection('User').findOne({ username:requsername });
 
-//register user function
+  if (!matchUser)
+    return { message: "User not found!" };
+  const isPasswordValid = await bcrypt.compare(reqpassword, matchUser.password);
+  console.log("run");
+  if (isPasswordValid)
+    return { message: "Correct password", user: matchUser };
+  else
+   return { message: "Invalid password" };
+}
+
+/*register user function
 function registeruser(requsername, reqpassword, reqemail) {
   client.db('VMS').collection('User').insertOne({
       "username": requsername,
@@ -287,7 +294,25 @@ function registeruser(requsername, reqpassword, reqemail) {
       "email":reqemail
     });
     return "User is created.";
-  }
+  }*/
+
+  async function registeruser(requsername, reqpassword, reqemail) {
+    try{
+      const hash = await bcrypt.hash(reqpassword, 10);
+      await client.db(dbName).collection(collection1).insertOne({
+          "username": requsername,
+          "password": hash,
+          "email":reqemail,
+          role: "host",
+          visitors: []
+        });
+        return "User is created.";
+    }catch(error){
+      console.error(error);
+      return "Error creating user. ";
+    }
+  
+    }
   
 //user create visitor function
 function createvisitor(reqvisitorname, reqtimespend = "0", reqage, reqphonenumber = "0") {
@@ -365,5 +390,31 @@ function verifyToken(req, res, next) {
     }
     req.admin = decoded;
     next();
+  });
+}
+
+
+//new add
+function authenticateAdmin(req, res, next) {
+  let header = req.headers.authorization;
+  if (!header) {
+    res.status(401).send('Unauthorized, missing token');
+    return;
+  }
+
+  let token = header.split(' ')[1];
+
+  jwt.verify(token, 'password', function (err, decoded) {
+    if (err) {
+      res.status(403).send('Invalid token');
+      return;
+    }else{
+      if(decoded.role !== 'admin'){
+        res.status(403).send("Forbidden: Insufficient permissions")
+      }
+      //add this in case your response is in another route, therefore you can retrieve the token at the terminal
+      console.log('Decoded token:',decoded);
+      return next();
+    }
   });
 }

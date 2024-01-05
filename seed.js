@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 const dbName = "VMS";
 const saltRounds = 10;
 
-const options = {
+/*const options = {
     definition: {
       openapi: '3.0.0',
       info: {
@@ -26,9 +26,9 @@ const options = {
     },
     },
     apis: ['./Cybercafe.js'], //files containing annotations as above
-  };
+  };*/
 
-  
+
 //connect to mongodb
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const uri = "mongodb+srv://kang:kangcn2001@cluster0.qsrp4df.mongodb.net/?retryWrites=true&w=majority";
