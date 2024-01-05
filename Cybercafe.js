@@ -53,10 +53,7 @@
  *     summary: Create a Admin
  *     tags:
  *       - User Management
- *     security:
- *       - bearerAuth: []
  *     requestBody:
- *       required: true
  *       content:
  *         application/json:
  *           schema:
