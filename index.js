@@ -1,13 +1,369 @@
-const express = require('express')
-const app = express()
+const express = require('express');
+const app = express();
 const port = process.env.PORT || 3000;
+//const mongoURI = process.env.MONGODB_URI
+app.use(express.json());
 
-app.use(express.json())
+const swaggerUi = require('swagger-ui-express');
+const swaggerJsdoc = require('swagger-jsdoc');
+const options = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'Cybercafe Visitor Management System',
+      description: 'API for managing visitors in a cybercafe',
+      version: '1.0.0',
+    },
+  },
+  apis: ['./Cybercafe.js'], //files containing annotations as above
+};
+const swaggerSpec = swaggerJsdoc(options);
+app.use('/group23', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-app.get('/', (req, res) => {
-   res.send('Hello World!')
-})
+//connect to mongodb
+const { MongoClient, ServerApiVersion } = require('mongodb');
+const uri = "mongodb+srv://kang:kangcn2001@cluster0.qsrp4df.mongodb.net/?retryWrites=true&w=majority";
+const client = new MongoClient(uri, {
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  }
+});
 
-app.listen(port, () => {
-   console.log(`Example app listening on port ${port}`)
-})
+//eee
+
+async function run() {
+  try {
+    // Connect the client to the server (optional starting in v4.7)
+    await client.connect();
+    // Send a ping to confirm a successful connection
+    console.log("Pinged your deployment. You successfully connected to MongoDB!");
+
+    app.use(express.json());
+    app.listen(port, () => {
+      console.log('Server listening at http://localhost:${port}');
+    });
+    
+
+//user login configuration
+    app.post('/login', async (req, res) => {
+      try{
+        const result =  await login(req.body.username, req.body.password)
+        if (result.message === 'Correct password') {
+          const token = generateToken({ username: req.body.username });
+          res.send({ message: 'Successful login', token });
+        } else {
+          res.send('Login unsuccessful');
+        }
+      }catch(error){
+            console.error(error);
+            res.status(500).send("Internal Server Error");
+        };
+    });
+
+
+//register user configuration
+    app.post('/register/user', async (req, res) => {
+        let result = registeruser(
+        req.body.username,
+        req.body.password,
+        req.body.email
+        ); 
+        res.send(result);
+    });
+
+
+    
+
+//user create visitor
+    app.post('/create/visitor/user', verifyToken, async (req, res) => {
+        let result = createvisitor(
+        req.body.visitorname,
+        req.body.timespend,
+        req.body.age,
+        req.body.phonenumber
+        ); 
+        res.send(result);
+    });
+
+
+
+    //start sini
+
+    //see created user
+    app.get('/view/user/admin', verifyToken, async (req, res) => {
+      try {
+      const result = await client
+          .db('VMS')
+          .collection('User')
+          .find()
+          .toArray();
+    
+      res.send(result);
+      } catch (error) {
+      console.error(error);
+      res.status(500).send("Internal Server Error");
+      }
+  });
+
+    
+    //create visitor
+    app.post('/create/visitor', async (req, res) => {
+      try {
+        let result = await createvisitor(
+          req.body.visitorname,
+          req.body.idproof,
+          req.body.entrytime
+          ); 
+          res.send(result);
+      }
+      catch (error) {
+        console.error(error);
+        res.status(500).send("Internal Server Error");
+        }
+    });
+
+    //create visitor (test)
+    app.post('/create/test/visitor', async (req, res) => {
+      try {
+        let result = await createtestvisitor(
+          req.body.visitorname,
+          req.body.idproof,
+          req.body.entrytime,
+          req.body.approval
+          ); 
+          res.send(result);
+      }
+      catch (error) {
+        console.error(error);
+        res.status(500).send("Internal Server Error");
+        }
+    });
+    
+    //see created visitor
+    app.get('/view/visitor/admin', verifyToken, async (req, res) => {
+        try {
+        const result = await client
+            .db('Cybercafe')
+            .collection('Visitor')
+            .find()
+            .toArray();
+    
+        res.send(result);
+        } catch (error) {
+        console.error(error);
+        res.status(500).send("Internal Server Error");
+        }
+    });
+
+      //see created visitor (test)
+      app.get('/view/test/visitor/admin', verifyToken, async (req, res) => {
+        try {
+        const result = await client
+            .db('Cybercafe')
+            .collection('Test')
+            .find()
+            .toArray();
+    
+        res.send(result);
+        } catch (error) {
+        console.error(error);
+        res.status(500).send("Internal Server Error");
+        }
+    });
+    
+
+    //delete visitor
+    app.delete('/delete/visitor/:idproof', verifyToken, async (req, res) => {
+      const idproof = req.params.idproof;
+    
+      try {
+        const deletevisitorResult = await client
+          .db('Cybercafe')
+          .collection('Visitor')
+          .deleteOne({ idproof: idproof});
+    
+        if (deletevisitorResult.deletedCount === 0) {
+          return res.status(404).send('Visitor not found or unauthorized');
+        }
+    
+        res.send('Visitor deleted successfully');
+      } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+      }
+    });
+
+
+    
+    //create visitor log
+    app.post('/create/visitorlog/admin', verifyToken, async (req, res) => {
+        let result = createvisitorlog(
+        req.body.visitorname,
+        req.body.idproof,
+        req.body.timespend,
+        req.body.payment
+        ); 
+        res.send(result);
+    });
+    
+
+    //see created visitor log
+    app.get('/view/visitorlog/admin', verifyToken, async (req, res) => {
+        try {
+        const result = await client
+            .db('Cybercafe')
+            .collection('Visitor Log')
+            .find()
+            .toArray();
+    
+        res.send(result);
+        } catch (error) {
+        console.error(error);
+        res.status(500).send("Internal Server Error");
+        }
+    });
+
+    //create computer
+    app.post('/create/computer', async (req, res) => {
+      let result = createcomputer(
+        req.body.idproof,
+        req.body.lanportno,
+        req.body.available
+        ); 
+        res.send(result);
+      });
+      
+
+    //see created computer  
+    app.get('/view/computer/admin', verifyToken, async (req, res) => {
+      try {
+        const result = await client
+        .db('Cybercafe').collection('Computer').find().toArray();
+        
+        res.send(result);
+      } catch (error) {
+        console.error(error);
+        res.status(500).send("Internal Server Error");
+      }
+    });
+    
+        
+  }catch (e) {
+    console.error(e);
+
+  }  
+  finally {
+    // Ensures that the client will close when you finish/error
+    
+  }
+}
+
+run().catch(console.dir);
+
+
+
+
+//function 放下面
+
+async function login(requsername, reqpassword) {
+    let matchUser = await client.db('VMS').collection('User').findOne({ username: { $eq: requsername } });
+  
+    if (!matchUser)
+      return { message: "User not found!" };
+  
+    if (matchUser.password === reqpassword)
+      return { message: "Correct password", user: matchUser };
+    else
+     return { message: "Invalid password" };
+  }
+
+//register user function
+function registeruser(requsername, reqpassword, reqemail) {
+  client.db('VMS').collection('User').insertOne({
+      "username": requsername,
+      "password": reqpassword,
+      "email":reqemail
+    });
+    return "User is created.";
+  }
+  
+//user create visitor function
+function createvisitor(reqvisitorname, reqtimespend = "0", reqage, reqphonenumber = "0") {
+    client.db('VMS').collection('Visitor').insertOne({
+        "visitorname": reqvisitorname,
+        "timespend":reqtimespend,
+        "age":reqage,
+        "phonenumber":reqphonenumber
+      });
+      return "Visitor is added.";
+    }
+
+
+
+//create visitor function (test)
+function createtestvisitor(reqvisitorname, reqidproof, reqentrytime = "0", reqapproval) {
+  client.db('Cybercafe').collection('Test').insertOne({
+      "visitorname": reqvisitorname,
+      "idproof": reqidproof,
+      "entrytime":reqentrytime,
+      "approval":reqapproval
+    });
+    return "Visitor is added";
+  }
+
+//create visitorlog function
+function createvisitorlog(reqvisitorname, reqidproof, reqtimespend = 0, reqpayment = 0) {
+    client.db('Cybercafe').collection('Visitor Log').insertOne({
+        "visitorname": reqvisitorname,
+        "idproof": reqidproof,
+        "timespend": reqtimespend,
+        "payment": reqpayment,
+      });
+      return "Visitor log is recorded";
+    }
+
+//create computer function
+function createcomputer(reqidproof, reqLanportno, reqAvailable) {
+  client.db('Cybercafe').collection('Computer').insertOne({
+
+      "idproof": reqidproof,
+      "lanportno": reqLanportno,
+      "available": reqAvailable
+    });
+    return "Computer is added";
+  }
+
+  //token function
+const jwt = require('jsonwebtoken');
+
+function generateToken(userData) {
+  const token = jwt.sign(
+    userData,
+    'password',
+    {expiresIn: 600}
+  );
+
+  console.log(token);
+  return token;
+}
+
+function verifyToken(req, res, next) {
+  let header = req.headers.authorization;
+  if (!header) {
+    res.status(401).send('Unauthorized');
+    return;
+  }
+
+  let token = header.split(' ')[1];
+
+  jwt.verify(token, 'password', function (err, decoded) {
+    if (err) {
+      res.status(401).send('Unauthorized');
+      return;
+    }
+    req.admin = decoded;
+    next();
+  });
+}
