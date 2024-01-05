@@ -14,7 +14,7 @@
  *   post:
  *     summary: User Login
  *     tags:
- *       - User
+ *       - Login
  *     requestBody:
  *       content:
  *         application/json:
@@ -48,9 +48,9 @@
 
 /**
  * @swagger
- * /register/user:
+ * /register/admin:
  *   post:
- *     summary: Create a User
+ *     summary: Create a Admin
  *     tags:
  *       - User Management
  *     security:
@@ -92,6 +92,52 @@
 
 
 /**
+ * @swagger
+ * /register/security:
+ *   post:
+ *     summary: Create a Security
+ *     tags:
+ *       - User Management
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *               email:
+ *                 type: string
+ * 
+ *     responses:
+ *       200:
+ *         description: Success
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: User created successfully
+ *       400:
+ *         description: Bad Request
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: Invalid input data
+ *
+ *     examples:
+ *       'application/json':
+ *         username: JohnDoe
+ *         password: 234aaa
+ *         email: chiawna@gmail.com
+ */
+
+
+
+/**
  * @openapi
  * paths:
  *   /view/user/admin:
@@ -129,7 +175,7 @@
 
 /**
  * @swagger
- * /create/visitor:
+ * /create/visitor/admin:
  *   post:
  *     summary: Create a Visitor
  *     tags:
@@ -140,12 +186,14 @@
  *           schema:
  *             type: object
  *             properties:
- *               visitorname:
+ *               name:
  *                 type: string
- *               idproof:
+ *               timespend:
  *                 type: string
- *               entrytime:
- *                 type: integer
+ *               age:
+ *                 type: string
+ *               phone number:
+ *                 type: string
  *     responses:
  *       200:
  *         description: Success
@@ -162,9 +210,10 @@
  *
  *     examples:
  *       'application/json':
- *         visitorname: JohnDoe
- *         idproof: XYZ123
- *         entrytime: 1530
+ *         name: JohnDoe
+ *         password: XYZ123
+ *         timespend: 1
+ *         phone number: 011234567
  */
 
 

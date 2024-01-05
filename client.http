@@ -19,8 +19,8 @@ Content-Type: application/json
 
 
 ###
-post http://localhost:3000/register/user
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNpdGkiLCJyb2xlIjoic2VjdXJpdHkiLCJpYXQiOjE3MDQ0NDEzNjUsImV4cCI6MTcwNDQ0MTk2NX0.c1MJDkP3DJXnRZA8FSNOlcH4MspXq2JGYgzhHJLWXzY
+post http://localhost:3000/register/admin
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkthbmcyMDAxIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzA0NDQyOTU3LCJleHAiOjE3MDQ0NDM1NTd9.JFyRi4DEuPIX8MhLH-CEhRbWtOrGpSIgScRwiLh1uc8
 Content-Type: application/json
 
 {
@@ -29,17 +29,30 @@ Content-Type: application/json
     "email":"filza@gmail.com"
 } 
 
-
 ###
-post http://localhost:3000/create/visitor/user
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkthbmcyMDAxIiwiaWF0IjoxNzA0MzkyNDk3LCJleHAiOjE3MDQzOTMwOTd9.E2fykAqoo_2hQL5rnNw3kpV8LeSqOgbcuy_JHypV6P4
+post http://localhost:3000/register/security
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNpdGkiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MDQ0NDMxMTUsImV4cCI6MTcwNDQ0MzcxNX0.ubG0dtv1AdZWfXjA0uLa2kWQv3c5EAFgz1fQNGA43vY
 Content-Type: application/json
 
 {
-    "visitorname": "Tan",
+    "username":"Abby",
+    "password":"d02221",
+    "email":"abby@gmail.com"
+} 
+
+
+// sini
+
+###
+post http://localhost:3000/create/visitor/admin
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkthbmcyMDAxIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzA0NDQ5ODY5LCJleHAiOjE3MDQ0NTA0Njl9.nI5uN9ompF48RLPEwufLGKpQpoeJjxHxbT5V4f7cetw
+Content-Type: application/json
+
+{
+    "visitorname": "Hee",
     "timespend":"1",
-    "age":"15",
-    "phonenumber":"0126531789"
+    "age":"18",
+    "phonenumber":"0126531012"
 }
 
 

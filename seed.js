@@ -34,6 +34,7 @@ async function seedData(){
             role: "admin",
             visitors:[]
         }
+
         await db.collection(collection1).insertOne(user1);
         //find user1 from mongodb to get its _id, to store the id into the visitor 1
         const user1_mongo = await db.collection(collection1).findOne({username: user1.username});
@@ -42,20 +43,22 @@ async function seedData(){
             timespend: "2",
             age: "14",
             phoneNumber: "0124586531",
-            from: user1_mongo._id
+            from: user1_mongo.username
         }
         await db.collection(collection2).insertOne(visitor1);
         await db.collection(collection1).updateOne({username: user1.username}, {$push: {visitors: visitor1 }});
         
+
         //2nd set
         const hash2 = await encryptPassword("b022124");
         const user2 = {
             username: "Siti",
             password: hash2,
             email: "siti123@gmail.com",
-            role: "security",
+            role: "admin",
             visitors: []
         }
+
         await db.collection(collection1).insertOne(user2);
         const user2_mongo = await db.collection(collection1).findOne({username: user2.username});
         const visitor2 = {
@@ -63,12 +66,16 @@ async function seedData(){
             timespend: "3",
             age: "15",
             phoneNumber: "0126531789",
-            from: user2_mongo._id
+            from: user2_mongo.username
         }
         await db.collection(collection2).insertOne(visitor2);
         await db.collection(collection1).updateOne({username: user2.username}, {$push: {visitors: visitor2}})
        
+
+
         
+
+
         //output this message if all data successfully added to database
         console.log('Data seeded successfully');
     }catch (error) {

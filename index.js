@@ -68,8 +68,8 @@ app.post('/login', async (req, res) => {
 
 
 //admin register user configuration
-app.post('/register/user', authenticateAdmin, async (req, res) => {
-  let result = await registeruser(
+app.post('/register/admin', authenticateAdmin, async (req, res) => {
+  let result = await registeradmin(
   req.body.username,
   req.body.password,
   req.body.email
@@ -77,23 +77,54 @@ app.post('/register/user', authenticateAdmin, async (req, res) => {
   res.send(result);
 });
 
-
+//admin register user configuration
+app.post('/register/security', authenticateSecurity, async (req, res) => {
+  let result = await registersecurity(
+  req.body.username,
+  req.body.password,
+  req.body.email
+  ); 
+  res.send(result);
+});
     
-/*
+
 //user create visitor
-    app.post('/create/visitor/user', verifyToken, async (req, res) => {
-        let result = createvisitor(
-        req.body.visitorname,
-        req.body.timespend,
-        req.body.age,
-        req.body.phonenumber
-        ); 
-        res.send(result);
-    });
+    app.post('/create/visitor/admin', authenticateAdmin, async (req, res) => {
+      const from = req.User.username;
+      let result = createvisitor(
+      req.body.visitorname,
+      req.body.timespend,
+      req.body.age,
+      req.body.phonenumber,
+      from
+      ); 
+      res.send(result);
+  });
 
+//Admin accepting the visitor pass
+app.put('/retrieving/pass/:visitorname/:idproof', verifyAdminToken, async (req, res) => {
+  const visitorname = req.params.visitorname;
+  const idproof = req.params.idproof;
 
+  try {
+      const updateaccessResult = await client
+          .db('VMS')
+          .collection('Visitor')
+          .updateOne({ visitorname,idproof },
+              { $set: { entrytime,cabinno,computername,access } });
 
-    //start sini
+      if (updateaccessResult.modifiedCount === 0) {
+          return res.status(404).send('visitor not found or unauthorized');
+      }
+
+      res.send('access updated successfully');
+  } catch (error) {
+      console.error(error);
+      res.status(500).send('Internal Server Error');
+  }
+});
+
+/*    //start sini
 
     //see created user
     app.get('/view/user/admin', verifyToken, async (req, res) => {
@@ -284,17 +315,7 @@ async function login(requsername, reqpassword) {
    return { message: "Invalid password" };
 }
 
-/*register user function
-function registeruser(requsername, reqpassword, reqemail) {
-  client.db('VMS').collection('User').insertOne({
-      "username": requsername,
-      "password": reqpassword,
-      "email":reqemail
-    });
-    return "User is created.";
-  }*/
-
-  async function registeruser(requsername, reqpassword, reqemail) {
+  async function registeradmin(requsername, reqpassword, reqemail) {
     try{
       const hash = await bcrypt.hash(reqpassword, 10);
       await client.db(dbName).collection(collection1).insertOne({
@@ -312,14 +333,52 @@ function registeruser(requsername, reqpassword, reqemail) {
   }
 
 
- /* 
+
+  /*async function registersecurity(requsername, reqpassword, reqemail) {
+    try{
+      const hash = await bcrypt.hash(reqpassword, 10);
+      await client.db(dbName).collection(collection1).insertOne({
+          "username": requsername,
+          "password": hash,
+          "email":reqemail,
+          role: "security",
+          visitors: []
+        });
+        return "User is created.";
+    }catch(error){
+      console.error(error);
+      return "Error creating user. ";
+    }
+  }
+
+
+
+
+  /*async function createvisitor(reqvisitorname, reqtimespend = "0", reqage, reqphonenumber = "0"){
+    try{
+      await client.db(dbName).collection(collection2).insertOne({
+        "name": reqvisitorname,
+        "timespend":reqtimespend,
+        "age":reqage,
+        "phonenumber":reqphonenumber,
+        "from":from
+      });
+      return "Visitor is added.";
+    }catch(error){
+      console.error(error);
+      return "Error creating user. ";
+    }
+  }
+
+
 //user create visitor function
 function createvisitor(reqvisitorname, reqtimespend = "0", reqage, reqphonenumber = "0") {
     client.db('VMS').collection('Visitor').insertOne({
         "visitorname": reqvisitorname,
         "timespend":reqtimespend,
         "age":reqage,
-        "phonenumber":reqphonenumber
+        "phonenumber":reqphonenumber,
+        from: username
       });
       return "Visitor is added.";
     }
@@ -395,6 +454,31 @@ function verifyToken(req, res, next) {
 
 //new add
 function authenticateAdmin(req, res, next) {
+  let header = req.headers.authorization;
+  if (!header) {
+    res.status(401).send('Unauthorized, missing token');
+    return;
+  }
+
+  let token = header.split(' ')[1];
+
+  jwt.verify(token, 'password', function (err, decoded) {
+    if (err) {
+      res.status(403).send('Invalid token');
+      return;
+    }else{
+      if(decoded.role !== 'admin'){
+        res.status(403).send("Forbidden: Insufficient permissions")
+      }
+      //add this in case your response is in another route, therefore you can retrieve the token at the terminal
+      console.log('Decoded token:',decoded);
+      return next();
+    }
+  });
+}
+
+
+function authenticateSecurity(req, res, next) {
   let header = req.headers.authorization;
   if (!header) {
     res.status(401).send('Unauthorized, missing token');
