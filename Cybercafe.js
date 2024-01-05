@@ -222,9 +222,9 @@
  * paths:
  *   /view/visitor/admin:
  *     get:
- *       summary: View Visitors
+ *       summary: Admin view visitors
  *       tags:
- *         - Visitor List
+ *         - Visitor
  *       security:
  *         - bearerAuth: []
  *       responses:
@@ -234,9 +234,10 @@
  *             application/json:
  *               example:
  *                 visitors:
- *                   - visitorname: "ayam"
- *                     idproof: "999999999"
- *                     entrytime: "1530"
+ *                   - visitorname: "abu"
+ *                     timespend: "2"
+ *                     age: "14"
+ *                     phone number: "0124567890"
  *         '401':
  *           description: Unauthorized. Only admin can view
  *           content:

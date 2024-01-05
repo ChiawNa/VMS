@@ -133,6 +133,22 @@ app.post('/create/visitor/admin', verifyToken, async (req, res) => {
     }
   });
 
+  //see created visitor
+  app.get('/view/visitor/admin', verifyToken, async (req, res) => {
+    try {
+      const result = await client
+      .db('VMS')
+      .collection('Visitor')
+      .find()
+      .toArray();
+    
+      res.send(result);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Internal Server Error");
+    }
+  });
+
 
         
   }catch (e) {

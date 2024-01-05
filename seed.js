@@ -31,8 +31,8 @@ async function seedData(){
             username: "Kang2001",
             password: hash,
             email: "chiawnak0390@gmail.com",
-            role: "admin",
-            visitors:[]
+            role: "admin"
+            //visitors:[]
         }
 
         await db.collection(collection1).insertOne(user1);
@@ -42,8 +42,8 @@ async function seedData(){
             name: "Khoo",
             timespend: "2",
             age: "14",
-            phoneNumber: "0124586531",
-            from: user1_mongo.username
+            phoneNumber: "0124586531"
+            //from: user1_mongo.username
         }
         await db.collection(collection2).insertOne(visitor1);
         await db.collection(collection1).updateOne({username: user1.username}, {$push: {visitors: visitor1 }});
@@ -55,8 +55,8 @@ async function seedData(){
             username: "Siti",
             password: hash2,
             email: "siti123@gmail.com",
-            role: "security",
-            visitors: []
+            role: "security"
+            //visitors: []
         }
 
         await db.collection(collection1).insertOne(user2);
@@ -65,8 +65,8 @@ async function seedData(){
             name: "Tan",
             timespend: "3",
             age: "15",
-            phoneNumber: "0126531789",
-            from: user2_mongo.username
+            phoneNumber: "0126531789"
+            //from: user2_mongo.username
         }
         await db.collection(collection2).insertOne(visitor2);
         await db.collection(collection1).updateOne({username: user2.username}, {$push: {visitors: visitor2}})
