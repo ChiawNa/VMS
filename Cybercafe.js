@@ -48,9 +48,9 @@
 
 /**
  * @swagger
- * /register/admin:
+ * /register/test/admin:
  *   post:
- *     summary: Create a Admin
+ *     summary: Testing
  *     tags:
  *       - User Management
  *     requestBody:
@@ -90,9 +90,9 @@
 
 /**
  * @swagger
- * /register/security:
+ * /register/admin:
  *   post:
- *     summary: Create a Security
+ *     summary: Create a Admin
  *     tags:
  *       - User Management
  *     security:

@@ -69,7 +69,7 @@ app.post('/login', async (req, res) => {
 
 
 //test register admin configuration
-app.post('/register/admin', async (req, res) => {
+app.post('/register/test/admin', async (req, res) => {
   try{
     let result = await registeradmin(
       req.body.username,
@@ -83,11 +83,11 @@ app.post('/register/admin', async (req, res) => {
    }
 });
 
-    
-/*//register admin configuration
+
+//register admin configuration
 app.post('/register/admin', verifyToken, async (req, res) => {
   try{
-    let result = await registersecurity(
+    let result = await registeradmin(
       req.body.username,
       req.body.password,
       req.body.email
@@ -99,7 +99,7 @@ app.post('/register/admin', verifyToken, async (req, res) => {
    }
 });
 
-
+/*
 //user create visitor
     app.post('/create/visitor/admin', authenticateAdmin, async (req, res) => {
       try{
