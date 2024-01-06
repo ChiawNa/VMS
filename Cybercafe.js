@@ -335,56 +335,61 @@
  */
 
 
-/** 
-* @swagger
-* /issue/visitorpass:
-*   post:
-*     summary: Issue a Visitor Pass
-*     tags:
-*       - Visitor Pass
-*     security:
-*       - bearerAuth: []
-*     requestBody:
-*       content:
-*         application/json:
-*           schema:
-*             type: object
-*             properties:
- *               name:
+/**
+ * @swagger
+ * /issue/visitorpass:
+ *   post:
+ *     summary: Admin Issue a Visitor Pass 
+ *     tags:
+ *       - Visitor Pass
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               visitorname:
+ *                 type: string
+ *               idproof:
  *                 type: string
  *               timespend:
+ *                 type: string
+ *               payment:
  *                 type: string
  *               age:
  *                 type: string
  *               phonenumber:
  *                 type: string
-*     responses:
-*       200:
-*         description: Success
-*         content:
-*           application/json:
-*             example:
-*               message: Visitor Pass issued successfully
-*       400:
-*         description: Bad Request
-*         content:
-*           application/json:
-*             example:
-*               error: Invalid input data
-*       401:
-*         description: Unauthorized
-*         content:
-*           application/json:
-*             example:
-*               error: Unauthorized
-*/
+ *     responses:
+ *       200:
+ *         description: Success
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: Visitor Pass issued successfully
+ *       400:
+ *         description: Bad Request
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: Invalid input data
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: Unauthorized
+ */
+
 
 
 /**
  * @openapi
  * /view/visitorpass:
  *   get:
- *     summary: View Visitor Passes
+ *     summary: View Visitor Pass
  *     tags:
  *       - Visitor Pass
  *     responses:

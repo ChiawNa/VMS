@@ -1,5 +1,6 @@
 const collection1 = "User"
 const collection2 = "Visitor"
+const collection3 = "visitorpass"
 const bcrypt = require('bcrypt');
 const dbName = "VMS";
 const saltRounds = 10;
@@ -24,6 +25,7 @@ async function seedData(){
 
         await db.collection(collection1).deleteMany({});
         await db.collection(collection2).deleteMany({});
+        await db.collection(collection3).deleteMany({});
 
         //1st set 
         const hash = await encryptPassword('1234_abcd');
@@ -45,6 +47,15 @@ async function seedData(){
         }
         await db.collection(collection2).insertOne(visitor1);
         await db.collection(collection1).updateOne({username: user1.username}, {$push: {visitors: visitor1 }});
+
+        // Sample data for visitor pass
+        const visitorPass1 = {
+            visitorname: 'Khoo',
+            idproof: 'ID12345',
+            timespend: '2',
+            payment: '50',
+        };
+        await db.collection(collection3).insertOne(visitorPass1);
         
 
         //2nd set
@@ -66,10 +77,16 @@ async function seedData(){
         }
         await db.collection(collection2).insertOne(visitor2);
         await db.collection(collection1).updateOne({username: user2.username}, {$push: {visitors: visitor2}})
-       
 
-
-        
+        // Sample data for visitor pass
+        const visitorPass2 = {
+            visitorname: 'Tan',
+            idproof: 'ID67890',
+            timespend: '3',
+            payment: '70',
+        };
+        await db.collection(collection3).insertOne(visitorPass2);
+    
 
 
         //output this message if all data successfully added to database

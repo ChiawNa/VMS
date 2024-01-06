@@ -164,46 +164,46 @@ app.post('/create/visitor/admin', authenticateAdmin, async (req, res) => {
 
 
   // 3) Admin issue visitor pass 
-  app.post('/issue/visitorpass', authenticateAdmin, async (req, res) => {
-    try {
-      const { visitorname, timespend, age, phonenumber} = req.body;
+    app.post('/issue/visitorpass', authenticateAdmin, async (req, res) => {
+      try {
+        const { visitorname, idproof, timespend, payment } = req.body;
 
-      // Validate input data
-      if (!visitorname || !age) {
-          return res.status(400).json({ error: 'Invalid input data' });
-      }
+        // Validate input data
+        if (!visitorname || !idproof || !timespend || !payment) {
+            return res.status(400).json({ error: 'Invalid input data' });
+        }
 
-      // Check if visitor exists
-      const existingVisitor = await client.db(dbName).collection("Visitor Pass").findOne({ "name": visitorname });
+        // Check if visitor exists
+        const existingVisitor = await client.db(dbName).collection("Visitor").findOne({ "visitorname": visitorname });
 
-      if (existingVisitor) {
-          // If visitor already exists, update the timespend and payment
-          await client.db(dbName).collection("Visitor Pass").updateOne(
-              { "name": visitorname },
-              { $set: { "timespend": timespend} }
-          );
-          return res.status(200).json({ message: 'Visitor pass updated.' });
-      } else {
-          // If visitor doesn't exist, create a new record (visitor pass)
-          const visitorPass = {
-              "name": visitorname,
-              "timespend": timespend,
-              "age": age,
-              "phone Number": phonenumber
-          };
+        if (existingVisitor) {
+            // If visitor already exists, update the timespend and payment
+            await client.db(dbName).collection("Visitor").updateOne(
+                { "visitorname": visitorname },
+                { $set: { "timespend": timespend, "payment": payment } }
+            );
+            return res.status(200).json({ message: 'Visitor pass updated.' });
+        } else {
+            // If visitor doesn't exist, create a new record (visitor pass)
+            const visitorPass = {
+                "visitorname": visitorname,
+                "idproof": idproof,
+                "timespend": timespend,
+                "payment": payment,
+            };
 
-          // Create a visitor record
-          createvisitor(visitorname, timespend, age, phonenumber);
+            // Create a visitor record
+            createvisitor(visitorname, timespend, req.body.age, req.body.phonenumber);
 
-          // Insert the visitor pass record
-          await client.db(dbName).collection("Visitor Pass").insertOne(visitorPass);
+            // Insert the visitor pass record
+            await client.db(dbName).collection("visitorpass").insertOne(visitorPass);
 
-          return res.status(200).json({ message: 'Visitor pass recorded.' });
-      }
-  } catch (error) {
-      console.error(error);
-      return res.status(500).json({ error: 'Internal Server Error' });
-  }
+            return res.status(200).json({ message: 'Visitor pass recorded.' });
+        }
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
 });
 
 //see created visitorpass
@@ -211,7 +211,7 @@ app.post('/create/visitor/admin', authenticateAdmin, async (req, res) => {
       try {
       const result = await client
           .db('VMS')
-          .collection('Visitor Pass')
+          .collection('visitorpass')
           .find()
           .toArray();
   
@@ -315,11 +315,12 @@ async function createvisitor(reqvisitorname, reqtimespend = "0", reqage, reqphon
 }
 
 
+  // Function to issue visitor pass (new function)
   async function issueVisitorPass(req, res) {
     try {
       // Validate the request body
-      const { visitorname, timespend, age, phonenumber} = req.body;
-      if (!visitorname || !age) {
+      const { visitorname, idproof, timespend, payment } = req.body;
+      if (!visitorname || !idproof || !timespend || !payment) {
         return res.status(400).json({ error: 'Invalid input data' });
       }
   
@@ -336,25 +337,25 @@ async function createvisitor(reqvisitorname, reqtimespend = "0", reqage, reqphon
       }
   
       // Now you can use idproof, timespend, and payment
-      const existingVisitor = await client.db(dbName).collection("Visitor Pass").findOne({ "name": visitorname });
+      const existingVisitor = await client.db(dbName).collection("Visitor").findOne({ "visitorname": visitorname });
   
       if (existingVisitor) {
         // If visitor already exists, update the timespend and payment or perform other actions as needed
-        await client.db(dbName).collection("Visitor Pass").updateOne(
-          { "name": visitorname },
-          { $set: { "timespend": timespend} }
+        await client.db(dbName).collection("Visitor").updateOne(
+          { "visitorname": visitorname },
+          { $set: { "timespend": timespend, "payment": payment } }
         );
         return res.status(200).json({ message: 'Visitor pass updated.' });
       } else {
         // If visitor doesn't exist, create a new record (visitor pass)
         const visitorPass = {
-          "name": visitorname,
+          "visitorname": visitorname,
+          "idproof": idproof,
           "timespend": timespend,
-          "age": age,
-          "phone Number": phonenumber
+          "payment": payment,
         };
   
-        await client.db(dbName).collection("Visitor Pass").insertOne(visitorPass);
+        await client.db(dbName).collection("visitorpass").insertOne(visitorPass);
         return res.status(200).json({ message: 'Visitor pass recorded.' });
       }
     } catch (error) {
@@ -362,7 +363,6 @@ async function createvisitor(reqvisitorname, reqtimespend = "0", reqage, reqphon
       return res.status(500).json({ error: 'Internal Server Error' });
     }
   }
-
 
 
   //token function
