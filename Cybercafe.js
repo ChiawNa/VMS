@@ -382,7 +382,7 @@
 
 /**
  * @openapi
- * /view/visitorpass/admin:
+ * /view/visitorpass:
  *   get:
  *     summary: View Visitor Passes
  *     tags:
@@ -394,13 +394,9 @@
  *           application/json:
  *             example:
  *               - visitorname: Dr Lim
- *                 idproof: B0987
  *                 timespend: 2 hours 30 minutes
- *                 payment: $10
- *               - visitorname: Jane Doe
- *                 idproof: J12345
- *                 timespend: 1 hour
- *                 payment: $5
+ *                 age: 20
+ *                 phone number: 60123456789
  *       401:
  *         description: Unauthorized
  */

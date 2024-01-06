@@ -207,7 +207,7 @@ app.post('/create/visitor/admin', authenticateAdmin, async (req, res) => {
 });
 
 //see created visitorpass
-    app.get('/view/visitorpass/admin', async (req, res) => {
+    app.get('/view/visitorpass', async (req, res) => {
       try {
       const result = await client
           .db('VMS')
@@ -399,7 +399,7 @@ function verifyToken(req, res, next) {
 }
 
 
-//new add
+
 function authenticateAdmin(req, res, next) {
   let header = req.headers.authorization;
   if (!header) {
@@ -424,7 +424,7 @@ function authenticateAdmin(req, res, next) {
   });
 }
 
-//new add
+
 function authenticateSecurity(req, res, next) {
   let header = req.headers.authorization;
   if (!header) {
