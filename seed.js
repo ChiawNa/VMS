@@ -32,8 +32,10 @@ async function seedData(){
         const user1 = {
             username: "Kang2001",
             password: hash,
+            phoneNumber: "01156801415",
             email: "chiawnak0390@gmail.com",
-            role: "admin"
+            role: "admin",
+            visitors:[]
         }
 
         await db.collection(collection1).insertOne(user1);
@@ -43,7 +45,8 @@ async function seedData(){
             name: "Khoo",
             timespend: "2",
             age: "14",
-            phoneNumber: "0124586531"
+            phoneNumber: "0124586531",
+            CreateBy: user1_mongo.username,
         }
         await db.collection(collection2).insertOne(visitor1);
         await db.collection(collection1).updateOne({username: user1.username}, {$push: {visitors: visitor1 }});
@@ -54,6 +57,8 @@ async function seedData(){
             idproof: 'ID12345',
             timespend: '2',
             payment: '50',
+            Admin: user1_mongo.username,
+            AdminContactNumber: user1_mongo.phoneNumber
         };
         await db.collection(collection3).insertOne(visitorPass1);
         
@@ -63,8 +68,10 @@ async function seedData(){
         const user2 = {
             username: "Siti",
             password: hash2,
+            phoneNumber: "01167891234",
             email: "siti123@gmail.com",
-            role: "security"
+            role: "security",
+            visitors:[]
         }
 
         await db.collection(collection1).insertOne(user2);
@@ -73,7 +80,8 @@ async function seedData(){
             name: "Tan",
             timespend: "3",
             age: "15",
-            phoneNumber: "0126531789"
+            phoneNumber: "0126531789",
+            CreateBy: user2_mongo.username,
         }
         await db.collection(collection2).insertOne(visitor2);
         await db.collection(collection1).updateOne({username: user2.username}, {$push: {visitors: visitor2}})
@@ -84,6 +92,8 @@ async function seedData(){
             idproof: 'ID67890',
             timespend: '3',
             payment: '70',
+            Admin: user1_mongo.username,
+            AdminContactNumber: user1_mongo.phoneNumber
         };
         await db.collection(collection3).insertOne(visitorPass2);
     

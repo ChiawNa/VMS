@@ -440,13 +440,11 @@
  *               error: Unauthorized
  */
 
-
-
 /**
  * @openapi
- * /view/visitorpass:
+ * visitor/view/visitorpass:
  *   get:
- *     summary: View Visitor Pass
+ *     summary: Visitor View Visitor Pass
  *     tags:
  *       - Visitor Pass
  *     responses:
@@ -459,6 +457,30 @@
  *                 timespend: 2 hours 30 minutes
  *                 age: 20
  *                 phone number: 60123456789
+ *       401:
+ *         description: Unauthorized
+ */
+
+/**
+ * @openapi
+ * /view/contactnumber:
+ *   get:
+ *     summary: Security View Contact Number
+ *     tags:
+ *       - Security
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Success
+ *         content:
+ *           application/json:
+ *             example:
+ *               - visitorname: Dr Lim
+ *                 idproof: A123
+ *                 timespend: 2 hours 30 minutes
+ *                 payment: 20
+ *                 adminContactNUmber: 0123456789
  *       401:
  *         description: Unauthorized
  */

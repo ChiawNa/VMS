@@ -67,21 +67,6 @@ app.post('/login', async (req, res) => {
     };
 });
 
-app.post('/login/page', async (req, res) => {
-  try{
-    const result =  await login(req.body.username, req.body.password)
-    if (result.message == 'Correct password') {
-      const user = await client.db(dbName).collection(collection1).find().toArray();
-      res.send({ message: 'Successful login', user });
-    } else {
-      res.send('Login unsuccessful');
-    }
-  }catch(error){
-        console.error(error);
-        res.status(500).send("Internal Server Error");
-    };
-});
-
 // Security register security configuration
 app.post('/create/security', authenticateSecurity, async (req, res) => {
   try{
@@ -222,8 +207,8 @@ app.post('/create/visitor/admin', authenticateAdmin, async (req, res) => {
     }
 });
 
-//see created visitorpass
-    app.get('/view/visitorpass', async (req, res) => {
+// 4) visitor view visitorpass
+    app.get('visitor/view/visitorpass', async (req, res) => {
       try {
       const result = await client
           .db('VMS')
@@ -238,6 +223,53 @@ app.post('/create/visitor/admin', authenticateAdmin, async (req, res) => {
       }
   });
 
+  // 5) Login page
+  app.post('/login/page', async (req, res) => {
+    try{
+      const result =  await login(req.body.username, req.body.password)
+      if (result.message == 'Correct password') {
+        const user = await client.db(dbName).collection(collection1).find().toArray();
+        res.send({ message: 'Successful login', user });
+      } else {
+        res.send('Login unsuccessful');
+      }
+    }catch(error){
+          console.error(error);
+          res.status(500).send("Internal Server Error");
+      };
+  });
+
+  // 6.1 view role
+app.get('/view/user/admin', authenticateAdmin, async (req, res) => {
+  try {
+    const result = await client
+    .db('VMS')
+    .collection('User')
+    .find()
+    .toArray();
+    
+    res.send(result);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+    }
+});
+
+// 6.2) security view visitorpass
+app.get('/view/contactnumber', authenticateSecurity, async (req, res) => {
+  try {
+  const result = await client
+      .db('VMS')
+      .collection('visitorpass')
+      .find()
+      .toArray();
+
+  res.send(result);
+  } catch (error) {
+  console.error(error);
+  res.status(500).send("Internal Server Error");
+  }
+});
 
         
   }catch (e) {
@@ -330,8 +362,7 @@ async function createvisitor(reqvisitorname, reqtimespend = "0", reqage, reqphon
   }
 }
 
-
-  // Function to issue visitor pass (new function)
+  // Function to issue visitor pass 
   async function issuevisitorpass(req, res) {
     try {
       // Validate the request body
