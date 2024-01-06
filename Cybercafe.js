@@ -47,6 +47,63 @@
 
 /**
  * @swagger
+ * /login/page:
+ *   post:
+ *     summary: Admin Login Page
+ *     description: 
+ *       - Authenticate admin user
+ *     tags:
+ *       - Login
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       '200':
+ *         description: Successful login
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: Admin login successful
+ *               hostsData: 
+ *                 - hostName: "Host1"
+ *                   ipAddress: "192.168.1.1"
+ *                 - hostName: "Host2"
+ *                   ipAddress: "192.168.1.2"
+ *       '400':
+ *         description: Bad Request
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: Invalid input data
+ *       '401':
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: Unauthorized
+ *       '500':
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: Internal Server Error
+ *
+ *     examples:
+ *       'application/json':
+ *         username: adminUser
+ *         password: adminPassword
+ */
+
+
+/**
+ * @swagger
  * /create/security:
  *   post:
  *     summary: Create a Security

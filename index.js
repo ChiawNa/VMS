@@ -3,9 +3,10 @@ const app = express();
 const bcrypt = require('bcrypt');
 const port = process.env.PORT || 3000;
 const dbName = 'VMS';
+const saltRounds = 10;
 const collection1 = "User"
 const collection2 = "Visitor" 
-//const mongoURI = process.env.MONGODB_URI
+const collection3 = "visitorpass"
 app.use(express.json());
 
 const swaggerUi = require('swagger-ui-express');
@@ -57,6 +58,21 @@ app.post('/login', async (req, res) => {
       const user = await client.db(dbName).collection(collection1).findOne({username: req.body.username});
       const token = await generateToken({ username: req.body.username , role: user.role});
       res.send({ message: 'Successful login', token });
+    } else {
+      res.send('Login unsuccessful');
+    }
+  }catch(error){
+        console.error(error);
+        res.status(500).send("Internal Server Error");
+    };
+});
+
+app.post('/login/page', async (req, res) => {
+  try{
+    const result =  await login(req.body.username, req.body.password)
+    if (result.message == 'Correct password') {
+      const user = await client.db(dbName).collection(collection1).find().toArray();
+      res.send({ message: 'Successful login', user });
     } else {
       res.send('Login unsuccessful');
     }
@@ -302,7 +318,7 @@ async function registersecurity(requsername, reqpassword, reqemail) {
 async function createvisitor(reqvisitorname, reqtimespend = "0", reqage, reqphonenumber = "0") {
   try {
     await client.db(dbName).collection(collection2).insertOne({
-      "name": reqvisitorname,
+      "visitorname": reqvisitorname,
       "timespend": reqtimespend,
       "age": reqage,
       "phonenumber": reqphonenumber,
@@ -316,7 +332,7 @@ async function createvisitor(reqvisitorname, reqtimespend = "0", reqage, reqphon
 
 
   // Function to issue visitor pass (new function)
-  async function issueVisitorPass(req, res) {
+  async function issuevisitorpass(req, res) {
     try {
       // Validate the request body
       const { visitorname, idproof, timespend, payment } = req.body;
