@@ -404,7 +404,7 @@
 
 /**
  * @openapi
- * visitor/view/visitorpass:
+ * /view/visitorpass:
  *   get:
  *     summary: Visitor View Visitor Pass
  *     tags:

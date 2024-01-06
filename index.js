@@ -208,7 +208,7 @@ app.post('/create/visitor/admin', authenticateAdmin, async (req, res) => {
 });
 
 // 4) visitor view visitorpass
-    app.get('visitor/view/visitorpass', async (req, res) => {
+    app.get('/view/visitorpass', async (req, res) => {
       try {
       const result = await client
           .db('VMS')
