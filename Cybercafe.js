@@ -49,7 +49,7 @@
  * @swagger
  * /login/page:
  *   post:
- *     summary: Admin Login Page
+ *     summary: Administrator Login Page
  *     description: 
  *       - Authenticate admin user
  *     tags:
