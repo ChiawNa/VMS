@@ -49,13 +49,13 @@ async function run() {
     });
     
 
-//all login configuration
+//admin login configuration
 app.post('/login', async (req, res) => {
   try{
     const result =  await login(req.body.username, req.body.password)
     if (result.message == 'Correct password') {
-      const user1 = await client.db(dbName).collection(collection1).findOne({username: req.body.username});
-      const token = await generateToken({ username: req.body.username , role: user1.role});
+      const user = await client.db(dbName).collection(collection1).findOne({username: req.body.username});
+      const token = await generateToken({ username: req.body.username , role: user.role});
       res.send({ message: 'Successful login', token });
     } else {
       res.send('Login unsuccessful');
@@ -66,10 +66,23 @@ app.post('/login', async (req, res) => {
     };
 });
 
+// Security register security configuration
+app.post('/create/security', authenticateSecurity, async (req, res) => {
+  try{
+    let result = await registersecurity(
+      req.body.username,
+      req.body.password,
+      req.body.email
+      ); 
+      res.send(result);
+    }catch (error) {
+      console.error(error);
+      res.status(500).send("Internal Server Error");
+   }
+});
 
-
-//test register admin configuration
-app.post('/register/test/admin', async (req, res) => {
+// 1.2) test register admin configuration
+app.post('/create/test/admin', async (req, res) => {
   try{
     let result = await registeradmin(
       req.body.username,
@@ -84,8 +97,8 @@ app.post('/register/test/admin', async (req, res) => {
 });
 
 
-//register admin configuration
-app.post('/register/admin', verifyToken, async (req, res) => {
+// 1.1) Security register admin configuration
+app.post('/create/admin', authenticateSecurity, async (req, res) => {
   try{
     let result = await registeradmin(
       req.body.username,
@@ -100,8 +113,8 @@ app.post('/register/admin', verifyToken, async (req, res) => {
 });
 
 
-//admin view created user
-app.get('/view/user/admin', verifyToken, async (req, res) => {
+// admin view created user
+app.get('/view/user/admin', authenticateAdmin, async (req, res) => {
   try {
     const result = await client
     .db('VMS')
@@ -118,7 +131,7 @@ app.get('/view/user/admin', verifyToken, async (req, res) => {
 
 
 //user create visitor
-app.post('/create/visitor/admin', verifyToken, async (req, res) => {
+app.post('/create/visitor/admin', authenticateAdmin, async (req, res) => {
   try{
     let result = await createvisitor(
       req.body.visitorname,
@@ -133,8 +146,8 @@ app.post('/create/visitor/admin', verifyToken, async (req, res) => {
     }
   });
 
-  //see created visitor
-  app.get('/view/visitor/admin', verifyToken, async (req, res) => {
+  //2) admin view created visitor
+  app.get('/view/visitor/admin', authenticateAdmin, async (req, res) => {
     try {
       const result = await client
       .db('VMS')
@@ -150,6 +163,66 @@ app.post('/create/visitor/admin', verifyToken, async (req, res) => {
   });
 
 
+  // 3) Admin issue visitor pass 
+  app.post('/issue/visitorpass', authenticateAdmin, async (req, res) => {
+    try {
+      const { visitorname, timespend, age, phonenumber} = req.body;
+
+      // Validate input data
+      if (!visitorname || !age) {
+          return res.status(400).json({ error: 'Invalid input data' });
+      }
+
+      // Check if visitor exists
+      const existingVisitor = await client.db(dbName).collection("Visitor Pass").findOne({ "name": visitorname });
+
+      if (existingVisitor) {
+          // If visitor already exists, update the timespend and payment
+          await client.db(dbName).collection("Visitor Pass").updateOne(
+              { "name": visitorname },
+              { $set: { "timespend": timespend} }
+          );
+          return res.status(200).json({ message: 'Visitor pass updated.' });
+      } else {
+          // If visitor doesn't exist, create a new record (visitor pass)
+          const visitorPass = {
+              "name": visitorname,
+              "timespend": timespend,
+              "age": age,
+              "phone Number": phonenumber
+          };
+
+          // Create a visitor record
+          createvisitor(visitorname, timespend, age, phonenumber);
+
+          // Insert the visitor pass record
+          await client.db(dbName).collection("Visitor Pass").insertOne(visitorPass);
+
+          return res.status(200).json({ message: 'Visitor pass recorded.' });
+      }
+  } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+//see created visitorpass
+    app.get('/view/visitorpass/admin', async (req, res) => {
+      try {
+      const result = await client
+          .db('VMS')
+          .collection('Visitor Pass')
+          .find()
+          .toArray();
+  
+      res.send(result);
+      } catch (error) {
+      console.error(error);
+      res.status(500).send("Internal Server Error");
+      }
+  });
+
+
         
   }catch (e) {
     console.error(e);
@@ -157,7 +230,6 @@ app.post('/create/visitor/admin', verifyToken, async (req, res) => {
   }  
   finally {
     // Ensures that the client will close when you finish/error
-    
   }
 }
 
@@ -195,7 +267,6 @@ async function registeradmin(requsername, reqpassword, reqemail) {
       "password": hash,
       "email": reqemail,
       "role": "admin",
-//      "visitors": []
     });
 
     return "Admin is created.";
@@ -204,6 +275,29 @@ async function registeradmin(requsername, reqpassword, reqemail) {
     return "Error creating user.";
   }
 }
+
+
+async function registersecurity(requsername, reqpassword, reqemail) {
+  try {
+    const hash = await bcrypt.hash(reqpassword, 10);
+
+    // Assuming createvisitor is a function that returns a visitor object
+    //const visitor = await createvisitor("VisitorName", "0", 25, "123456789", requsername);
+
+    await client.db(dbName).collection(collection1).insertOne({
+      "username": requsername,
+      "password": hash,
+      "email": reqemail,
+      "role": "security",
+    });
+
+    return "Security is created.";
+  } catch (error) {
+    console.error(error);
+    return "Error creating user.";
+  }
+}
+
 
 async function createvisitor(reqvisitorname, reqtimespend = "0", reqage, reqphonenumber = "0") {
   try {
@@ -219,6 +313,57 @@ async function createvisitor(reqvisitorname, reqtimespend = "0", reqage, reqphon
     return "Error creating user.";
   }
 }
+
+
+  async function issueVisitorPass(req, res) {
+    try {
+      // Validate the request body
+      const { visitorname, timespend, age, phonenumber} = req.body;
+      if (!visitorname || !age) {
+        return res.status(400).json({ error: 'Invalid input data' });
+      }
+  
+      // Get the user ID from the token
+      const userId = getUserIdFromToken(req);
+      if (!userId) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+  
+      // Verify that the user has admin privileges (modify this condition based on your user roles)
+      const isAdmin = checkAdminPrivileges(userId);
+      if (!isAdmin) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+  
+      // Now you can use idproof, timespend, and payment
+      const existingVisitor = await client.db(dbName).collection("Visitor Pass").findOne({ "name": visitorname });
+  
+      if (existingVisitor) {
+        // If visitor already exists, update the timespend and payment or perform other actions as needed
+        await client.db(dbName).collection("Visitor Pass").updateOne(
+          { "name": visitorname },
+          { $set: { "timespend": timespend} }
+        );
+        return res.status(200).json({ message: 'Visitor pass updated.' });
+      } else {
+        // If visitor doesn't exist, create a new record (visitor pass)
+        const visitorPass = {
+          "name": visitorname,
+          "timespend": timespend,
+          "age": age,
+          "phone Number": phonenumber
+        };
+  
+        await client.db(dbName).collection("Visitor Pass").insertOne(visitorPass);
+        return res.status(200).json({ message: 'Visitor pass recorded.' });
+      }
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+  }
+
+
 
   //token function
 const jwt = require('jsonwebtoken');
@@ -254,7 +399,7 @@ function verifyToken(req, res, next) {
 }
 
 
-/*//new add
+//new add
 function authenticateAdmin(req, res, next) {
   let header = req.headers.authorization;
   if (!header) {
@@ -279,7 +424,7 @@ function authenticateAdmin(req, res, next) {
   });
 }
 
-
+//new add
 function authenticateSecurity(req, res, next) {
   let header = req.headers.authorization;
   if (!header) {
@@ -294,12 +439,12 @@ function authenticateSecurity(req, res, next) {
       res.status(403).send('Invalid token');
       return;
     }else{
-      if(decoded.role !== 'admin'){
+      if(decoded.role !== 'security'){
         res.status(403).send("Forbidden: Insufficient permissions")
       }
       //add this in case your response is in another route, therefore you can retrieve the token at the terminal
       console.log('Decoded token:',decoded);
       return next();
     }
-  });
-}*/
+  })
+}

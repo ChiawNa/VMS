@@ -19,7 +19,7 @@ Content-Type: application/json
 
 
 ###
-post http://localhost:3000/register/test/admin
+post http://localhost:3000/create/test/admin
 //Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkthbmcyMDAxIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzA0NDYxMTE2LCJleHAiOjE3MDQ0NjE3MTZ9.OGa96cAXgKXx3H5M3ptcihfMIM9r5BcGEeUHbfu40DM
 Content-Type: application/json
 
@@ -31,8 +31,8 @@ Content-Type: application/json
 
 
 ###
-post http://localhost:3000/register/admin
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkthbmcyMDAxIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzA0NDYxMTE2LCJleHAiOjE3MDQ0NjE3MTZ9.OGa96cAXgKXx3H5M3ptcihfMIM9r5BcGEeUHbfu40DM
+post http://localhost:3000/create/admin
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkthbmcyMDAxIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzA0NTIwMTAwLCJleHAiOjE3MDQ1MjA3MDB9.SK2x-akiao4oaF27EOrKy_XQQ9Tf9Uz6VUY1RuwwRTw
 Content-Type: application/json
 
 {
@@ -82,8 +82,8 @@ Content-Type: application/json
 }
 
 ###
-GET http://localhost:3000/view/visitor/admin
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFtaXIiLCJpYXQiOjE3MDQwOTkyNTgsImV4cCI6MTcwNDA5OTg1OH0.SCvTyAWKI7ZIepogvkeTktUCZ_pPbSYHqaXlzoX2AYQ
+GET http://localhost:3000/view/user/admin
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkthbmcyMDAxIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzA0NTIwMjM2LCJleHAiOjE3MDQ1MjA4MzZ9.-hMKCqXNm8RUruD1tQWgRfCYRXF0Ol0jSpt3qkXSOOI
 
 
 ###

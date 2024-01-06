@@ -45,14 +45,58 @@
  *         password: Xyz_123
  */
 
+/**
+ * @swagger
+ * /create/security:
+ *   post:
+ *     summary: Create a Security
+ *     tags:
+ *       - Security
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *               email:
+ *                 type: string
+ * 
+ *     responses:
+ *       200:
+ *         description: Success
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: User created successfully
+ *       400:
+ *         description: Bad Request
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: Invalid input data
+ *
+ *     examples:
+ *       'application/json':
+ *         username: JohnDoe
+ *         password: 567abc
+ *         email: John@gmail.com
+ */
+
 
 /**
  * @swagger
- * /register/test/admin:
+ * /create/test/admin:
  *   post:
  *     summary: Testing
  *     tags:
- *       - User Management
+ *       - Admin Management
  *     requestBody:
  *       content:
  *         application/json:
@@ -90,11 +134,11 @@
 
 /**
  * @swagger
- * /register/admin:
+ * /create/admin:
  *   post:
  *     summary: Create a Admin
  *     tags:
- *       - User Management
+ *       - Admin Management
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -141,7 +185,7 @@
  *     get:
  *       summary: View Users
  *       tags:
- *         - User Management
+ *         - Admin Management
  *       security:
  *         - bearerAuth: []
  *       responses:
@@ -259,7 +303,7 @@
  *     delete:
  *       summary: Delete Visitors
  *       tags:
- *         - Visitor List
+ *         - Visitor
  *       security:
  *         - bearerAuth: []
  *       parameters:
@@ -290,135 +334,73 @@
  *                 error: "Internal Server Error"
  */
 
-/**
- * @swagger
- * /create/visitorlog/admin:
- *   post:
- *     summary: Create a visitorlog
- *     tags:
- *       - Visitor Log
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               visitorname:
- *                 type: string
- *               idproof:
+
+/** 
+* @swagger
+* /issue/visitorpass:
+*   post:
+*     summary: Issue a Visitor Pass
+*     tags:
+*       - Visitor Pass
+*     security:
+*       - bearerAuth: []
+*     requestBody:
+*       content:
+*         application/json:
+*           schema:
+*             type: object
+*             properties:
+ *               name:
  *                 type: string
  *               timespend:
  *                 type: string
- *               payment:
+ *               age:
  *                 type: string
- *     responses:
- *       200:
- *         description: Success
- *         content:
- *           application/json:
- *             example:
- *               message: Visitor Log created successfully
- *       400:
- *         description: Bad Request
- *         content:
- *           application/json:
- *             example:
- *               error: Invalid input data
- *
- *     examples:
- *       'application/json':
- *         username: JohnDoe
- *         idproof: XYZ123
- */
+ *               phonenumber:
+ *                 type: string
+*     responses:
+*       200:
+*         description: Success
+*         content:
+*           application/json:
+*             example:
+*               message: Visitor Pass issued successfully
+*       400:
+*         description: Bad Request
+*         content:
+*           application/json:
+*             example:
+*               error: Invalid input data
+*       401:
+*         description: Unauthorized
+*         content:
+*           application/json:
+*             example:
+*               error: Unauthorized
+*/
 
 
 /**
  * @openapi
- * /view/visitorlog/admin:
+ * /view/visitorpass/admin:
  *   get:
- *     summary: View all visitor logs on by admin
+ *     summary: View Visitor Passes
  *     tags:
- *       - Visitor Log
- *     security:
- *       - bearerAuth: []
+ *       - Visitor Pass
  *     responses:
  *       200:
  *         description: Success
  *         content:
  *           application/json:
  *             example:
- *               - visitorname: ayam
- *                 idproof: 9999999
- *                 timespend: 2 hours
+ *               - visitorname: Dr Lim
+ *                 idproof: B0987
+ *                 timespend: 2 hours 30 minutes
  *                 payment: $10
  *               - visitorname: Jane Doe
- *       401:
- *         description: Unauthorized
- */
-
-
-
-/**
- * @swagger
- * /create/computer:
- *   post:
- *     summary: Create a computer's availability
- *     tags:
- *       - Computer
- *     requestBody:
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               idproof:
- *                 type: string
- *               lanportno:
- *                 type: string
- *               available:
- *                 type: string
- *     responses:
- *       200:
- *         description: Success
- *         content:
- *           application/json:
- *             example:
- *               message: Computer created successfully
- *       400:
- *         description: Bad Request
- *         content:
- *           application/json:
- *             example:
- *               error: Invalid input data
- *
- *     examples:
- *       'application/json':
- *         username: JohnDoe
- *         idproof: XYZ123
- */
-
-
-/**
- * @openapi
- * /view/computer/admin:
- *   get:
- *     summary: View all computer's availability by admin
- *     tags:
- *       - Computer
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: Success
- *         content:
- *           application/json:
- *             example:
- *               - idproof: 9999999
- *                 lanportno: 317
- *                 available: yes
- *               - visitorname: Jane Doe
+ *                 idproof: J12345
+ *                 timespend: 1 hour
+ *                 payment: $5
  *       401:
  *         description: Unauthorized
  */
