@@ -273,13 +273,11 @@
 
 /**
  * @swagger
- * /create/visitor/admin:
+ * /create/visitor:
  *   post:
- *     summary: Admin create a Visitor
+ *     summary: Create visitor
  *     tags:
  *       - Visitor
- *     security:
- *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -293,7 +291,7 @@
  *                 type: string
  *               age:
  *                 type: string
- *               phonenumber:
+ *               phoneNumber:
  *                 type: string
  *     responses:
  *       200:

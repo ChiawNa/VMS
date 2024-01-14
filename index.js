@@ -132,13 +132,13 @@ app.get('/view/user/admin', authenticateAdmin, async (req, res) => {
 
 
 //user create visitor
-app.post('/create/visitor/admin', authenticateAdmin, async (req, res) => {
+app.post('/create/visitor', async (req, res) => {
   try{
     let result = await createvisitor(
       req.body.visitorname,
       req.body.timespend,
       req.body.age,
-      req.body.phonenumber
+      req.body.phoneNumber
       ); 
       res.send(result);
     } catch (error) {
@@ -347,13 +347,13 @@ async function registersecurity(requsername, reqpassword, reqemail) {
 }
 
 
-async function createvisitor(reqvisitorname, reqtimespend, reqage, reqphonenumber) {
+async function createvisitor(reqvisitorname, reqtimespend, reqage, reqphoneNumber) {
   try {
     await client.db(dbName).collection(collection2).insertOne({
       "name": reqvisitorname,
       "timespend": reqtimespend,
       "age": reqage,
-      "phonenumber": reqphonenumber,
+      "phoneNumber": reqphoneNumber,
     });
     return "Visitor is added.";
   } catch (error) {
