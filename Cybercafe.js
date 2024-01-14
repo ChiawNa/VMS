@@ -287,13 +287,13 @@
  *           schema:
  *             type: object
  *             properties:
- *               name:
+ *               visitorname:
  *                 type: string
  *               timespend:
  *                 type: string
  *               age:
  *                 type: string
- *               phone number:
+ *               phonenumber:
  *                 type: string
  *     responses:
  *       200:

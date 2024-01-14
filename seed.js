@@ -8,7 +8,7 @@ const saltRounds = 10;
 
 //connect to mongodb
 const { MongoClient, ServerApiVersion } = require('mongodb');
-const uri = "mongodb+srv://kang:kangcn2001@cluster0.qsrp4df.mongodb.net/?retryWrites=true&w=majority";
+const uri = "mongodb+srv://kang:Kangcn2001@cluster0.qsrp4df.mongodb.net/?retryWrites=true&w=majority";
 const client = new MongoClient(uri, {
   serverApi: {
     version: ServerApiVersion.v1,
@@ -42,7 +42,7 @@ async function seedData(){
         //find user1 from mongodb to get its _id, to store the id into the visitor 1
         const user1_mongo = await db.collection(collection1).findOne({username: user1.username});
         const visitor1 = {
-            name: "Khoo",
+            visitorname: "Khoo",
             timespend: "2",
             age: "14",
             phoneNumber: "0124586531",
@@ -77,7 +77,7 @@ async function seedData(){
         await db.collection(collection1).insertOne(user2);
         const user2_mongo = await db.collection(collection1).findOne({username: user2.username});
         const visitor2 = {
-            name: "Tan",
+            visitorname: "Tan",
             timespend: "3",
             age: "15",
             phoneNumber: "0126531789",

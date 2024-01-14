@@ -347,13 +347,13 @@ async function registersecurity(requsername, reqpassword, reqemail) {
 }
 
 
-async function createvisitor(reqvisitorname, reqtimespend, reqage, reqphonenumber) {
+async function createvisitor(reqvisitorname, reqtimespend = "0", reqage, reqphonenumber = "0") {
   try {
     await client.db(dbName).collection(collection2).insertOne({
       "name": reqvisitorname,
       "timespend": reqtimespend,
       "age": reqage,
-      "phonenumber": reqphonenumber,
+      "phonenumber": reqphonenumber
     });
     return "Visitor is added.";
   } catch (error) {
