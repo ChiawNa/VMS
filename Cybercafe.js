@@ -319,13 +319,11 @@
 /**
  * @openapi
  * paths:
- *   /view/visitor/admin:
+ *   /view/visitor:
  *     get:
- *       summary: Admin view visitors
+ *       summary: View visitors
  *       tags:
  *         - Visitor
- *       security:
- *         - bearerAuth: []
  *       responses:
  *         '200':
  *           description: Successfully retrieved visitor information.
