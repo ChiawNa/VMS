@@ -131,8 +131,24 @@ app.get('/view/user/admin', authenticateAdmin, async (req, res) => {
 });
 
 
-//user create visitor
+/*//user create visitor
 app.post('/create/visitor', async (req, res) => {
+  try{
+    let result = await createvisitor(
+      req.body.visitorname,
+      req.body.timespend,
+      req.body.age,
+      req.body.phoneNumber
+      ); 
+      res.send(result);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Internal Server Error");
+    }
+  });*/
+
+  //test only
+app.post('/create/visitor/admin', authenticateAdmin, async (req, res) => {
   try{
     let result = await createvisitor(
       req.body.visitorname,
@@ -148,13 +164,15 @@ app.post('/create/visitor', async (req, res) => {
   });
 
   //2) admin view created visitor
-  app.get('/view/visitor', async (req, res) => {
+  app.get('/view/visitor', authenticateAdmin, async (req, res) => {
     try {
+      const createdBy = req.user.username; 
       const result = await client
       .db('VMS')
       .collection('Visitor')
       .find()
       .toArray();
+      createdBy
     
       res.send(result);
     } catch (error) {
@@ -271,6 +289,27 @@ app.get('/view/contactnumber', authenticateSecurity, async (req, res) => {
   }
 });
 
+//delete visitor
+app.delete('/delete/visitor/:idproof', verifyToken, async (req, res) => {
+  const idproof = req.params.idproof;
+
+  try {
+    const deletevisitorResult = await client
+      .db('CybercafeV2')
+      .collection('visitor')
+      .deleteOne({ idproof: idproof});
+
+    if (deletevisitorResult.deletedCount === 0) {
+      return res.status(404).send('Visitor not found or unauthorized');
+    }
+
+    res.send('Visitor deleted successfully');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
         
   }catch (e) {
     console.error(e);
@@ -347,6 +386,7 @@ async function registersecurity(requsername, reqpassword, reqemail) {
 }
 
 
+//testing only
 async function createvisitor(reqvisitorname, reqtimespend, reqage, reqphoneNumber) {
   try {
     await client.db(dbName).collection(collection2).insertOne({

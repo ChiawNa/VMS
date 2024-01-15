@@ -315,6 +315,52 @@
  *         phone number: 011234567
  */
 
+/**
+ * @swagger
+ * /create/visitor/admin:
+ *   post:
+ *     summary: Create visitor
+ *     tags:
+ *       - Visitor
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               visitorname:
+ *                 type: string
+ *               timespend:
+ *                 type: string
+ *               age:
+ *                 type: string
+ *               phoneNumber:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Success
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: Visitor created successfully
+ *       400:
+ *         description: Bad Request
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: Invalid input data
+ *
+ *     examples:
+ *       'application/json':
+ *         name: JohnDoe
+ *         password: XYZ123
+ *         timespend: 1
+ *         phone number: 011234567
+ */
+
 
 /**
  * @openapi
